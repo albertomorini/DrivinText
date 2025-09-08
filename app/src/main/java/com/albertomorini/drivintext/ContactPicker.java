@@ -14,21 +14,22 @@ import android.widget.Toast;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import java.util.ArrayList;
+
 public class ContactPicker  {
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
 
 
     public Boolean checkPermission(Context myContext){
         if (ContextCompat.checkSelfPermission(myContext, Manifest.permission.READ_CONTACTS)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions((Activity) myContext, new String[]{Manifest.permission.READ_CONTACTS},
-                    PERMISSIONS_REQUEST_READ_CONTACTS);
-            Log.d("permission", "checkPermission: HERE");
+                == PackageManager.PERMISSION_GRANTED) {
             return true;
+            // Proceed to read contacts
         } else {
             return false;
         }
     }
+
 
    protected  void main(){ //TODO
         //ASK PERMSISION
@@ -38,7 +39,7 @@ public class ContactPicker  {
 
    }
 
-    public void getContacts(Context context) {
+    public ArrayList<String> getContacts(Context context) {
         ContentResolver contentResolver = context.getContentResolver();
         Cursor cursor = contentResolver.query(
                 ContactsContract.Contacts.CONTENT_URI,
@@ -48,6 +49,7 @@ public class ContactPicker  {
                 null
         );
 
+        ArrayList<String> contacts = null;
         if (cursor != null && cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
               String contactId = cursor.getString(
@@ -72,7 +74,8 @@ public class ContactPicker  {
                         while (phoneCursor.moveToNext()) {
                             String phoneNumber = phoneCursor.getString(
                                     phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                            Log.d("CONTACT", "Name: " + name + ", Phone: " + phoneNumber);
+                            //Log.d("CONTACT", "Name: " + name + ", Phone: " + phoneNumber);
+                            contacts.add(name + " ("+phoneNumber+")");
                         }
                         phoneCursor.close();
                     }
@@ -80,6 +83,7 @@ public class ContactPicker  {
             }
             cursor.close();
         }
+        return contacts;
     }
 
 

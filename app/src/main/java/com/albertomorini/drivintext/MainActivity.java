@@ -12,23 +12,15 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    protected void populateList(){
-        String tutorials[] = { "Algorithms",
-                "Data Structures",
-                "Languages",
-                "Interview Corner",
-                "GATE",
-                "ISRO CS",
-                "UGC NET CS",
-                "CS Subjects",
-                "Web Technologies" };
+    protected void populateList(String contacts[]){
 
         setContentView(R.layout.activity_main);
         ListView myL = findViewById(R.id.list);
-        ArrayAdapter<String> arr = new ArrayAdapter<String>(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,tutorials);
+        ArrayAdapter<String> arr = new ArrayAdapter<String>(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,contacts);
         myL.setAdapter(arr);
     }
 
@@ -43,15 +35,19 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        populateList();
 
         ContactPicker cp = new ContactPicker();
         Boolean esito = cp.checkPermission(this);
+        Log.d("PERMISSION", esito.toString());
 
-        Log.d("PERMISSION:: ",esito.toString());
 
+
+        ArrayList<String> contacts= cp.getContacts(this);
+        //populateList(contacts.toArray().);
         if(esito){
-            cp.getContacts(this);
+
+    //            populateList();
+
         }else{
 //            cp.onRequestPermissionsResult(1,);
         }
