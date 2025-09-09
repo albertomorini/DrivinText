@@ -17,5 +17,33 @@
         app:layout_constraintVertical_bias="0.183"
         tools:layout_editor_absoluteX="-4dp" />
 
+    <ListView
+        android:id="@+id/listMessages"
+        android:layout_width="409dp"
+        android:layout_height="152dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.587"
+        tools:layout_editor_absoluteX="1dp" />
+
+    <TextView
+        android:id="@+id/labelContacts"
+        android:layout_width="411dp"
+        android:layout_height="28dp"
+        android:layout_marginBottom="12dp"
+        android:text="Yours starred contacts"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintBottom_toTopOf="@+id/list"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="338dp"
+        android:layout_height="39dp"
+        android:text="Yours messages"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="288dp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
