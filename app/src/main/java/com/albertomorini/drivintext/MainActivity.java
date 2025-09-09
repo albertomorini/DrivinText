@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -30,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     protected void init_List_StarredContact(String contacts[]){
-
+        Log.d(TAG, "init_List_StarredContact: "+contacts.length);
         setContentView(R.layout.activity_main);
         ListView UI_starredContacts_list = findViewById(R.id.list);
         ArrayAdapter<String> arr = new ArrayAdapter<String>(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,contacts);
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
         UI_starredContacts_list.setOnItemClickListener((parent,view,position,id)->{
             Contact dest = starredContacts.get(position);
-            Log.d(TAG, ">>"+dest.getName());
+
             selectedContact = position;
             Toast.makeText(MainActivity.this, "Clicked: " + dest.getName()+" /  " +dest.getPhoneNumber().toString(), Toast.LENGTH_SHORT).show();
         });
@@ -46,8 +47,19 @@ public class MainActivity extends AppCompatActivity {
     }
     protected  void init_List_TextMessages(String[] messages){
         //TODO get the list and do the same of contacts
-    }
 
+        ListView UI_messages_list = findViewById(R.id.listMessages);
+        ArrayAdapter<String> arr = new ArrayAdapter<String>(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,messages);
+        UI_messages_list.setAdapter(arr);
+
+        UI_messages_list.setOnItemClickListener((parent,view,position,id)->{
+            String chosenTextMessage = textMessages[position];
+
+            selectedMessage = position;
+            Toast.makeText(MainActivity.this, "Chosen text: " +chosenTextMessage, Toast.LENGTH_SHORT).show();
+        });
+    }
+    /// ///////////////////////////////////////////////////////////////////////////////////////////////////////
     private void load_StarredContacts(){
         ContactPicker cp = new ContactPicker();
         Boolean esito = cp.checkPermission(this);
@@ -61,9 +73,35 @@ public class MainActivity extends AppCompatActivity {
 
     }
     private void load_TextMessages(){
-      //  String[4] tmp = new String["Sono partito adesso","Sono arrivato a casa","Sto guidando, chiamami", "Non vedo i messaggi, se serve chiamami"];
+       textMessages = new String[]{
+               "Sono partito adesso","Sono arrivato a casa","Sto guidando, chiamami", "Non vedo i messaggi, se serve chiamami"
+       };
+       init_List_TextMessages(textMessages);
     }
 
+    /// ///////
+
+    private void sendMessage(){
+        MessageSender sender = new MessageSender();
+        if(sender.checkPermissionSMS(this)){
+            Contact dummyContact = starredContacts.get(selectedContact);
+
+            Boolean res_sending = sender.sendTextSMS(
+                    dummyContact.getPhoneNumber(),
+                    dummyContact.getName(),
+                    textMessages[selectedMessage]
+            );
+            if(res_sending){
+                Toast.makeText(MainActivity.this, "SMS sent", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(MainActivity.this, "ERROR sending SMS", Toast.LENGTH_SHORT).show();
+            }
+        }else{
+            Toast.makeText(MainActivity.this, "Send SMS permission required", Toast.LENGTH_SHORT).show();
+
+        }
+
+    }
 
 
     @Override
@@ -77,8 +115,15 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        load_StarredContacts();
+        load_TextMessages();
 
 
+        Button sendSmsButton = findViewById(R.id.buttonSendSMS);
+        sendSmsButton.setOnClickListener(v -> {
+            // Code to send SMS or do something
+            sendMessage();
+        });
 
 
     }

@@ -33,61 +33,7 @@ public class ContactPicker {
     }
 
 
-    protected void main() { //TODO
-        //ASK PERMSISION
-        //Load contacts
-        // show contacts on View
-        // pass the selected contact
-
-    }
-
-//    public String[] getStarredContacts(Context context) {
-//        ContentResolver contentResolver = context.getContentResolver();
-//        Cursor cursor = contentResolver.query(
-//                ContactsContract.Contacts.CONTENT_URI,
-//                null,
-//                "starred=?",
-//                new String[]{"1"},
-//                null
-//        );
-//
-//        String[] contacts = new String[cursor.getCount()]; //size by the size of number of starred contacts
-//        int index =0;
-//        if (cursor != null && cursor.getCount() > 0) {
-//            while (cursor.moveToNext()) {
-//                String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-//                String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-//
-//                // Check if contact has a phone number
-//                int hasPhoneNumber = cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
-//
-//
-//                if (hasPhoneNumber > 0) {
-//                    Cursor phoneCursor = contentResolver.query(
-//                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-//                            null,
-//                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-//                            new String[]{contactId},
-//                            null
-//                    );
-//
-//                    if (phoneCursor != null) {
-//                        while (phoneCursor.moveToNext()) {
-//                            String phoneNumber = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-//                            contacts[index] = name + " (" + phoneNumber + ")";
-//                            index++;
-//                        }
-//                        phoneCursor.close();
-//                    }
-//                }
-//            }
-//            cursor.close();
-//        }
-//        Log.d("CONTACTS", "getStarredContacts: " + contacts.length);
-//        return contacts;
-//    }
-
-
+//TODO: MAKE IT UNIQUE-DISTICNT
     public ArrayList<Contact> getStarredContacts(Context context) {
         ContentResolver contentResolver = context.getContentResolver();
         Cursor cursor = contentResolver.query(

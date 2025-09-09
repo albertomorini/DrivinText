@@ -12,7 +12,7 @@ import androidx.core.content.ContextCompat;
 public class MessageSender {
 
 
-    private Boolean checkPermissionSMS(Context ctx){
+    public Boolean checkPermissionSMS(Context ctx){
         if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.SEND_SMS)
                 != PackageManager.PERMISSION_GRANTED) {
 
