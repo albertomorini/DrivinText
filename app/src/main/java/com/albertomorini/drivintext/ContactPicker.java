@@ -16,6 +16,10 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ContactPicker {
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
@@ -78,7 +82,13 @@ public class ContactPicker {
             cursor.close();
         }
         Log.d(TAG, "total starred contacts: " + contacts.size());
-        return contacts;
+
+        Set<String> seenPhoneNumbers = new HashSet<>();
+        ArrayList<Contact> uniqueContacts = (ArrayList<Contact>) contacts.stream()
+                .filter(c -> seenPhoneNumbers.add(c.getPhoneNumber()))
+                .collect(Collectors.toList());
+
+        return uniqueContacts;
     }
 
 

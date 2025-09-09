@@ -44,11 +44,12 @@
 
     <Button
         android:id="@+id/buttonSendSMS"
-        android:layout_width="374dp"
-        android:layout_height="67dp"
+        android:layout_width="413dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="32dp"
         android:text="Send SMS"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="591dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="-2dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
