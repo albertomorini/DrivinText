@@ -12,26 +12,26 @@ import androidx.core.content.ContextCompat;
 public class MessageSender {
 
 
-    public Boolean checkPermissionSMS(Context ctx){
-        if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.SEND_SMS)
-                != PackageManager.PERMISSION_GRANTED) {
+    public Boolean checkPermissionSMS(Context ctx) {
+        if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
 
             ActivityCompat.requestPermissions((Activity) ctx, new String[]{Manifest.permission.SEND_SMS}, 1);
-            return true;
-        }else{
             return false;
+        } else {
+            return true;
         }
     }
 
-    public Boolean sendTextSMS(String phoneNumber,String contactName, String textMessage ){
+    public Boolean sendTextSMS(String phoneNumber, String contactName, String textMessage) {
         try {
             SmsManager smsManager = SmsManager.getDefault();
             smsManager.sendTextMessage(phoneNumber, null, textMessage, null, null);
             return true;
         } catch (Exception e) {
-            throw new RuntimeException(e);
-           // return false;
+            //throw new RuntimeException(e);
+            return false;
         }
+
     }
 
 }

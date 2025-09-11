@@ -16,7 +16,7 @@ public class Contact {
     }
 
     public String getPhoneNumber() {
-        return phoneNumber;
+        return phoneNumber.replaceAll(" ","");
     }
 
     // parseToString returns Stream<String>
