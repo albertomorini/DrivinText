@@ -7,15 +7,40 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/labelContacts"
-        android:layout_width="411dp"
-        android:layout_height="28dp"
-        android:text="Yours starred contacts"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/list"
-        tools:layout_editor_absoluteX="2dp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="2dp"
+        tools:layout_editor_absoluteY="-41dp">
+
+        <TextView
+            android:id="@+id/DrivinText_lbl"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="#282626"
+            android:paddingStart="8dp"
+            android:text="Drivin text"
+            android:textColor="#F2F1F1"
+            android:textSize="34sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/labelContacts"
+            android:layout_width="411dp"
+            android:layout_height="28dp"
+            android:paddingStart="8dp"
+            android:text="Yours starred contacts"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/list"
+            tools:layout_editor_absoluteX="2dp" />
+    </LinearLayout>
 
     <ListView
         android:id="@+id/list"
@@ -30,6 +55,7 @@
         android:id="@+id/labelMessages"
         android:layout_width="330dp"
         android:layout_height="45dp"
+        android:paddingStart="8dp"
         android:text="Yours messages"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textStyle="bold"
@@ -45,31 +71,18 @@
         app:layout_constraintVertical_bias="0.678"
         tools:layout_editor_absoluteX="2dp" />
 
+
     <Button
         android:id="@+id/buttonSendSMS"
         android:layout_width="413dp"
         android:layout_height="60dp"
         android:layout_marginBottom="32dp"
+        android:backgroundTint="#282626"
         android:text="Send SMS"
-        android:background="#282626"
+        android:textColor="#fff"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_editor_absoluteX="-2dp" />
 
-    <TextView
-        android:id="@+id/DrivinText_lbl"
-        android:layout_width="411dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="#282626"
-        android:text="Drivin text"
-        android:textColor="#F2F1F1"
-        android:textSize="34sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floating_newMessage"
@@ -78,6 +91,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="44dp"
         android:layout_marginEnd="16dp"
+        android:backgroundTint="#327334"
         android:clickable="true"
         app:layout_constraintBottom_toTopOf="@+id/listMessages"
         app:layout_constraintEnd_toEndOf="parent"
