@@ -13,18 +13,27 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import org.json.JSONArray;
+
 public class TextMessageEditor extends AppCompatActivity {
     private static final String TAG = "com.drivintext.MessageEditor";
     private String newTextMessage = "";
+//    private String[] allMessages;
 
-    private void storeNewMessage(){
+    private JSONArray allMessages = new JSONArray();
+
+    private void storeNewMessage() {
         //TODO: store into the cache
-        loadMessages();
+        Log.d(TAG, "storeNewMessage: SAVING");
+
+        StorageManager.storeMessages(this, allMessages, newTextMessage);
+        StorageManager.readMessagesStored(this);
     }
 
-    private void loadMessages(){
+    private void loadMessages() {
         //load messages from cache and give the possibility to remove them
-
+        this.allMessages = StorageManager.readMessagesStored(this);
+        Log.d(TAG, "Stored Messages: " + allMessages);
     }
 
 
@@ -38,7 +47,7 @@ public class TextMessageEditor extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
+        loadMessages();
         EditText UI_NewMessage = findViewById(R.id.newMessage);
 
         UI_NewMessage.addTextChangedListener(new TextWatcher() {
@@ -50,16 +59,18 @@ public class TextMessageEditor extends AppCompatActivity {
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.d(TAG,"new message onchange: "+s.toString());
+
+                Log.d(TAG, "new message onchange: " + s.toString());
             }
         });
 
         Button btnSave = findViewById(R.id.saveNewMessage);
-        btnSave.setOnClickListener(v->{
+        btnSave.setOnClickListener(v -> {
             storeNewMessage();
         });
 
