@@ -20,7 +20,7 @@ public class StorageManager {
     public static final String PATHFILE = "store_message.json";
     public static final String KEY_MESSAGE_SET = "messages";
 
-    public static JSONArray readMessagesStored(Context ctx) {
+    public static JSONArray getMessagesStored(Context ctx) {
         File file = new File(ctx.getFilesDir(), PATHFILE);
         Log.d(TAG, "file: " + file.length());
 
@@ -44,9 +44,8 @@ public class StorageManager {
         return new JSONArray(); //if not exists return a new one
     }
 
-    public static JSONArray storeMessages(Context ctx, JSONArray allValues, String newValue) {
+    private static JSONArray storeMessages(Context ctx, JSONArray allValues) {
         try {
-            allValues.put(newValue);
             JSONObject job = new JSONObject();
 
             try {
@@ -55,7 +54,7 @@ public class StorageManager {
                 throw new RuntimeException(e);
             }
 
-            Log.d(TAG, "job b4 saving : " + job.toString());
+//            Log.d(TAG, "job b4 saving : " + job.toString());
 
             File file = new File(ctx.getFilesDir(), PATHFILE);
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
@@ -68,7 +67,62 @@ public class StorageManager {
         } catch (Exception e) {
             return new JSONArray();
         }
+    }
 
+    public static JSONArray storeMessages(Context ctx, JSONArray allValues, String newTextMessage) {
+        try {
+            // Avoid duplicates
+            Boolean alreadyExisting = false;
+            for (int i = 0; i < allValues.length() ; i++) {
+                if(allValues.getString(i).equals(newTextMessage)){
+                    alreadyExisting=true;
+                }
+            }
+            if(!alreadyExisting){
+                allValues.put(newTextMessage);
+            }
+
+            JSONObject job = new JSONObject();
+
+            try {
+                job.put(KEY_MESSAGE_SET, allValues.toString());
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+
+//            Log.d(TAG, "job b4 saving : " + job.toString());
+
+            File file = new File(ctx.getFilesDir(), PATHFILE);
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                writer.write(job.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return job.getJSONArray(KEY_MESSAGE_SET);
+        } catch (Exception e) {
+            return new JSONArray();
+        }
+    }
+
+    protected static JSONArray removeItem(Context ctx, String text) {
+        JSONArray dummy_storedMessages = getMessagesStored(ctx);
+        for (int i = 0; i < dummy_storedMessages.length(); i++) {
+            try {
+                Log.d(TAG, "removing"+dummy_storedMessages.getString(i).toString().toLowerCase()+" / "+text.toLowerCase());
+                if (dummy_storedMessages.getString(i).toString().toLowerCase().equals(text.toLowerCase())) {
+
+
+                     dummy_storedMessages.remove(i);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+        Log.d(TAG, "removeItem: "+dummy_storedMessages.toString());
+        storeMessages(ctx, dummy_storedMessages);
+        return dummy_storedMessages;
     }
 
 

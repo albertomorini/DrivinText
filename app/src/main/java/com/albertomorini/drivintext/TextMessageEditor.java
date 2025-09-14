@@ -12,28 +12,52 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TextMessageEditor extends AppCompatActivity {
     private static final String TAG = "com.drivintext.MessageEditor";
     private String newTextMessage = "";
-//    private String[] allMessages;
 
     private JSONArray allMessages = new JSONArray();
 
     private void storeNewMessage() {
-        //TODO: store into the cache
-        Log.d(TAG, "storeNewMessage: SAVING");
 
-        StorageManager.storeMessages(this, allMessages, newTextMessage);
-        StorageManager.readMessagesStored(this);
+        allMessages = StorageManager.storeMessages(this, allMessages, newTextMessage);
+        //TODO: update
+//        StorageManager.getMessagesStored(this);
+        loadMessages();
     }
 
-    private void loadMessages() {
+    protected void loadMessages() {
         //load messages from cache and give the possibility to remove them
-        this.allMessages = StorageManager.readMessagesStored(this);
+        this.allMessages = StorageManager.getMessagesStored(this);
         Log.d(TAG, "Stored Messages: " + allMessages);
+
+        RecyclerView recyclerView;
+        MyAdapter adapter;
+        List<String> data;
+
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        data = new ArrayList<>();
+        for (int i = 0; i < allMessages.length(); i++) {
+            try {
+                data.add(allMessages.getString(i));
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        adapter = new MyAdapter(this, data);
+        recyclerView.setAdapter(adapter);
     }
 
 

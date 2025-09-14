@@ -1,6 +1,7 @@
 package com.albertomorini.drivintext;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +18,9 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -26,7 +30,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "Oblivion.DrivingText.MainActivity";
 
     private ArrayList<Contact> starredContacts = new ArrayList<>();
-    private String[] textMessages = new String[10];
+    private JSONArray storedTextMessage = new JSONArray();
+
     /// ////////////////////////////////////
 
     private int selectedContact = -1;
@@ -41,20 +46,34 @@ public class MainActivity extends AppCompatActivity {
         UI_starredContacts_list.setAdapter(arr);
 
         UI_starredContacts_list.setOnItemClickListener((parent, view, position, id) -> {
-            selectedContact = position;
+            if (selectedContact == position) {
+                selectedContact = -1;
+                view.setBackgroundColor(Color.TRANSPARENT);
+            } else {
+                selectedContact = position;
+                view.setBackgroundColor(Color.parseColor("#e0fff4"));
+            }
+
         });
 
     }
 
     protected void init_List_TextMessages(String[] messages) {
-        //TODO get the list and do the same of contacts
-
+        for (String s : messages) {
+            Log.d(TAG, "SS: " + s);
+        }
         ListView UI_messages_list = findViewById(R.id.listMessages);
         ArrayAdapter<String> arr = new ArrayAdapter<String>(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, messages);
         UI_messages_list.setAdapter(arr);
 
         UI_messages_list.setOnItemClickListener((parent, view, position, id) -> {
-            selectedMessage = position;
+            if (position == selectedMessage) {
+                view.setBackgroundColor(Color.TRANSPARENT);
+                selectedMessage = -1;
+            } else {
+                selectedMessage = position;
+                view.setBackgroundColor(Color.parseColor("#e0fff4"));
+            }
         });
     }
 
@@ -73,10 +92,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void load_TextMessages() {
-        textMessages = new String[]{
-                "Sono partito adesso", "Sono arrivato a casa", "Sto guidando, chiamami", "Non vedo i messaggi, se serve chiamami"
-        };
-        init_List_TextMessages(textMessages);
+        StorageManager sm = new StorageManager();
+        JSONArray storedMessage = sm.getMessagesStored(this);
+        storedTextMessage = storedMessage;
+        String[] dummy_messages = new String[storedMessage.length()];
+        for (int i = 0; i < storedMessage.length(); i++) {
+            try {
+                dummy_messages[i] = storedMessage.getString(i);
+            } catch (JSONException e) {
+                dummy_messages[i] = "";
+            }
+        }
+        init_List_TextMessages(dummy_messages);
     }
 
     /// ///////
@@ -85,16 +112,25 @@ public class MainActivity extends AppCompatActivity {
         MessageSender sender = new MessageSender();
         if (sender.checkPermissionSMS(this)) {
             Contact dummyContact = starredContacts.get(selectedContact);
+            Boolean res_sending = false;
+            try {
+                res_sending = sender.sendTextSMS(
+                        dummyContact.getPhoneNumber(),
+                        dummyContact.getName(),
+                        storedTextMessage.getString(selectedMessage)
+                );
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
 
-            Boolean res_sending = sender.sendTextSMS(
-                    dummyContact.getPhoneNumber(),
-                    dummyContact.getName(),
-                    textMessages[selectedMessage]
-            );
-            Toast.makeText(MainActivity.this, "Contact: "+dummyContact.getName()+" text: "+textMessages[selectedMessage], Toast.LENGTH_SHORT).show();
 
             if (res_sending) {
-                Toast.makeText(MainActivity.this, "SMS sent to: "+dummyContact.getName(), Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(MainActivity.this, "SMS sent to: " + dummyContact.getName(), Toast.LENGTH_SHORT).show();
+                load_StarredContacts();
+                load_TextMessages();
+                selectedContact = -1;
+                selectedMessage = -1;
             } else {
                 Toast.makeText(MainActivity.this, "ERROR sending SMS", Toast.LENGTH_SHORT).show();
             }
@@ -126,12 +162,10 @@ public class MainActivity extends AppCompatActivity {
             sendMessage();
         });
 
-        FloatingActionButton newMessage =findViewById(R.id.floating_newMessage);
-        newMessage.setOnClickListener(v->{
+        FloatingActionButton newMessage = findViewById(R.id.floating_newMessage);
+        newMessage.setOnClickListener(v -> {
             Intent intentNewMessage = new Intent(this, TextMessageEditor.class);
             startActivity(intentNewMessage);
-            //startActivity("com.albertomorini");
-//            setContentView(R.layout.new_message_crator);
         });
 
     }
